@@ -18,7 +18,7 @@ public class StatisticsCache : IStatisticsCache
 
     public IEnumerable<MakelaarStatistic> Set(string key, IEnumerable<MakelaarStatistic> value)
     {
-        return _memoryCache.Set(key, value);
+        return _memoryCache.Set(key, value, TimeSpan.FromMinutes(1));
     }
 
     public bool TryGetValue(string key, out IEnumerable<MakelaarStatistic> value)

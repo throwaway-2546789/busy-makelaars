@@ -47,7 +47,7 @@ public class TestCache
     };
 
     private Mock<IStatisticsCache>? _statsCache { get; set; }
-    private Mock<IStatisticsProvider>? _statsProvider { get; set; }
+    private Mock<IStatisticsCalculator>? _statsCalculator { get; set; }
 
     private Statistics? _cacheSvc { get; set; }
 
@@ -60,21 +60,21 @@ public class TestCache
         _statsCache = new Mock<IStatisticsCache>();
         _statsCache.Setup(_ => _.TryGetValue(It.Is<string>(x => x == _cached.ToString()), out _cachedResult)).Returns(true);
 
-        _statsProvider = new Mock<IStatisticsProvider>();
-        _statsProvider.Setup(_ => _.GetStatistics(It.Is<Filter>(x => x.ToString() == _provider.ToString()))).ReturnsAsync(_providerResult);
+        _statsCalculator = new Mock<IStatisticsCalculator>();
+        _statsCalculator.Setup(_ => _.Calculate(It.Is<Filter>(x => x.ToString() == _provider.ToString()))).ReturnsAsync(_providerResult);
 
-        _statsProvider.Setup(_ => _.GetStatistics(It.Is<Filter>(x => x.ToString() == _exception.ToString()))).ThrowsAsync(new Exception("mock exception"));
+        _statsCalculator.Setup(_ => _.Calculate(It.Is<Filter>(x => x.ToString() == _exception.ToString()))).ThrowsAsync(new Exception("mock exception"));
 
         IEnumerable<MakelaarStatistic> nil = null;
-        _statsProvider.Setup(_ => _.GetStatistics(It.Is<Filter>(x => x.ToString() == _null.ToString()))).ReturnsAsync(nil);
+        _statsCalculator.Setup(_ => _.Calculate(It.Is<Filter>(x => x.ToString() == _null.ToString()))).ReturnsAsync(nil);
 
-        _cacheSvc = new Statistics(nopLogger, _statsCache.Object, _statsProvider.Object);
+        _cacheSvc = new Statistics(nopLogger, _statsCache.Object, _statsCalculator.Object);
     }
 
     [Test]
     public async Task TestGetStatistics_Cached()
     {
-        if (_cacheSvc == null || _statsProvider == null)
+        if (_cacheSvc == null || _statsCalculator == null)
         {
             Assert.Fail();
             return;
@@ -83,7 +83,7 @@ public class TestCache
         var got = await _cacheSvc.GetStatistics(_cached);
         got.Should().BeEquivalentTo(_cachedResult);
 
-        _statsProvider.Verify(mock => mock.GetStatistics(_cached), Times.Never);
+        _statsCalculator.Verify(mock => mock.Calculate(_cached), Times.Never);
     }
 
     [Test]
@@ -104,7 +104,7 @@ public class TestCache
     [Test]
     public async Task TestGetStatistics_Errors()
     {
-        if (_cacheSvc == null || _statsProvider == null)
+        if (_cacheSvc == null || _statsCalculator == null)
         {
             Assert.Fail();
             return;
@@ -113,6 +113,6 @@ public class TestCache
         Assert.ThrowsAsync<StatisticsProvisionException>(() => _cacheSvc.GetStatistics(_exception));
         Assert.ThrowsAsync<NullResultException>(() => _cacheSvc.GetStatistics(_null));
 
-        _statsProvider.Verify(mock => mock.GetStatistics(_cached), Times.Never);
+        _statsCalculator.Verify(mock => mock.Calculate(_cached), Times.Never);
     }
 }

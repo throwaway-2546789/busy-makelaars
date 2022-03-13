@@ -12,6 +12,10 @@ public interface IStatisticsProvider
     public Task<IEnumerable<MakelaarStatistic>> GetStatistics(Filter filter);
 }
 
+public interface IStatisticsCalculator
+{
+    public Task<IEnumerable<MakelaarStatistic>> Calculate(Filter filter);
+}
 public interface IListingsProvider
 {
     public Task<IEnumerable<Listing>> GetListings(Filter filter, CancellationToken cancellationToken = default!);

@@ -7,17 +7,17 @@ public class Statistics : IStatisticsProvider
 {
     private readonly ILogger<Statistics> _logger;
     private readonly IStatisticsCache _statsCache;
-    private readonly IStatisticsProvider _statsProvider;
+    private readonly IStatisticsCalculator _statsCalculator;
 
     public Statistics(
         ILogger<Statistics> logger,
         IStatisticsCache statsCache,
-        IStatisticsProvider statsProvider
+        IStatisticsCalculator statsCalculator
     )
     {
         _logger = logger;
         _statsCache = statsCache;
-        _statsProvider = statsProvider;
+        _statsCalculator = statsCalculator;
     }
 
     public async Task<IEnumerable<MakelaarStatistic>> GetStatistics(Filter filter)
@@ -35,7 +35,7 @@ public class Statistics : IStatisticsProvider
         _logger.LogInformation("No stats related to {filterKey} in cache, attempting retrieval from provider", filterKey);
         try
         {
-            result = await _statsProvider.GetStatistics(filter);
+            result = await _statsCalculator.Calculate(filter);
         }
         catch (Exception ex)
         {

@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 
 namespace bm.core.statistics;
 
-public class StatisticsCalculator : IStatisticsProvider
+public class StatisticsCalculator : IStatisticsCalculator
 {
     private readonly ILogger<StatisticsCalculator> _logger;
 
@@ -14,7 +14,7 @@ public class StatisticsCalculator : IStatisticsProvider
         _listingsProvider = listingsProvider;
     }
 
-    public async Task<IEnumerable<MakelaarStatistic>> GetStatistics(Filter filter)
+    public async Task<IEnumerable<MakelaarStatistic>> Calculate(Filter filter)
     {
         _logger.LogInformation("forming makelaar statistics based on available listings");
         var listings = await _listingsProvider.GetListings(filter);
