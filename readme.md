@@ -42,7 +42,7 @@ Some tests are located in here.
 
 ### bm.api
 
-The API offers two route `/` and `/tuin`, which fetch the statistics related to all listings, and garden listings respectively.
+The API offers two route `/` and `/tuin`, which fetch the statistics related to all listings, and garden listings, respectively. These routes returns JSON containing the 10 makelaars with the most objects, ordered by the property count descending (ie: most listings at the top).
 
 Example output of `curl http://localhost:5215/ | jq`:
 
