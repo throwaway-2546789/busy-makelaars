@@ -1,5 +1,5 @@
 using bm.core;
-using bm.core.cache;
+using bm.core.data;
 using bm.core.exceptions;
 using System;
 using System.Collections.Generic;
@@ -49,13 +49,13 @@ public class TestCache
     private Mock<IStatisticsCache>? _statsCache { get; set; }
     private Mock<IStatisticsCalculator>? _statsCalculator { get; set; }
 
-    private Statistics? _cacheSvc { get; set; }
+    private Provider? _cacheSvc { get; set; }
 
     [SetUp]
     public void SetUp()
     {
         var loggerFactory = new NullLoggerFactory();
-        var nopLogger = loggerFactory.CreateLogger<Statistics>();
+        var nopLogger = loggerFactory.CreateLogger<Provider>();
 
         _statsCache = new Mock<IStatisticsCache>();
         _statsCache.Setup(_ => _.TryGetValue(It.Is<string>(x => x == _cached.ToString()), out _cachedResult)).Returns(true);
@@ -68,7 +68,7 @@ public class TestCache
         IEnumerable<MakelaarStatistic> nil = null;
         _statsCalculator.Setup(_ => _.Calculate(It.Is<Filter>(x => x.ToString() == _null.ToString()))).ReturnsAsync(nil);
 
-        _cacheSvc = new Statistics(nopLogger, _statsCache.Object, _statsCalculator.Object);
+        _cacheSvc = new Provider(nopLogger, _statsCache.Object, _statsCalculator.Object);
     }
 
     [Test]

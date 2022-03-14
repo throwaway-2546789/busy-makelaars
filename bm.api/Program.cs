@@ -1,15 +1,22 @@
 using bm.core;
-using bm.core.cache;
-using bm.core.statistics;
+using bm.core.data;
 using bm.services.funda;
 
+using System;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var fundaSvcKey = Environment.GetEnvironmentVariable("FUNDA_PARTNER_KEY");
+if (string.IsNullOrEmpty(fundaSvcKey))
+{
+    Console.WriteLine("Missing FUNDA_PARTNER_KEY. Exiting..");
+    return;
+}
+
 builder.Services.AddHttpClient();
 
-var fundaSvcConfig = new Config { Key = "ac1b0b1572524640a0ecc54de453ea9f" };
+var fundaSvcConfig = new Config { Key = fundaSvcKey };
 var fundaSvcFactory = new Factory(fundaSvcConfig);
 
 builder.Services.AddSingleton<IListingsProvider>(fundaSvcFactory.Create());
@@ -20,7 +27,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddSingleton<IStatisticsCache, StatisticsCache>();
 builder.Services.AddSingleton<IStatisticsCalculator, StatisticsCalculator>();
 
-builder.Services.AddSingleton<IStatisticsProvider, Statistics>();
+builder.Services.AddSingleton<IStatisticsProvider, Provider>();
 builder.Services.AddSingleton<IBusyMakelaars, MakelaarsService>();
 
 var app = builder.Build();

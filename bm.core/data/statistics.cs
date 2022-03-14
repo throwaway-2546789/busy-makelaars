@@ -1,16 +1,16 @@
 using Microsoft.Extensions.Logging;
 using bm.core.exceptions;
 
-namespace bm.core.cache;
+namespace bm.core.data;
 
-public class Statistics : IStatisticsProvider
+public class Provider : IStatisticsProvider
 {
-    private readonly ILogger<Statistics> _logger;
+    private readonly ILogger<Provider> _logger;
     private readonly IStatisticsCache _statsCache;
     private readonly IStatisticsCalculator _statsCalculator;
 
-    public Statistics(
-        ILogger<Statistics> logger,
+    public Provider(
+        ILogger<Provider> logger,
         IStatisticsCache statsCache,
         IStatisticsCalculator statsCalculator
     )

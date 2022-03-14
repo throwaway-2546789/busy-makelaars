@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Logging;
 
-namespace bm.core.statistics;
+namespace bm.core.data;
 
 public class StatisticsCalculator : IStatisticsCalculator
 {

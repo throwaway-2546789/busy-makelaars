@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
 
-namespace bm.core.cache;
+namespace bm.core.data;
 
 public interface IStatisticsCache
 {
